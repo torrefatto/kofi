@@ -42,8 +42,11 @@ GraphQL:
 from aiohttp import web
 import typing as T
 
+from kofi import rest
+from kofi import graphql
+
 app_routes: T.List[web.RouteDef] = [
-    web.get("/api/verify", rest.VerifyView),
-    web.get("/api/interpolate", rest.VerifyView),
-    web.post("/graphql", graphql.GQLView),
+    web.get("/api/verify", rest.verify),
+    web.get("/api/interpolate", rest.interpolate),
+    web.post("/graphql", graphql.graphql),
 ]

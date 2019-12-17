@@ -13,6 +13,7 @@ aiohttp = "*"
 python-codicefiscale = "*"
 aiohttp-graphql = "*"
 pyyaml = "*"
+kofi = {editable = true,path = "."}
 
 [requires]
 python_version = "3.8"

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "943b08fc98b07124d58def804e1959cd60b0abcffcdb9b2708dd7fe2516fe4a5"
+            "sha256": "1f7ae60b4c6eaf8167b32333216c06d5e1fb7dbcebdca933e2444a154cb2a6af"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -62,6 +62,13 @@
             ],
             "version": "==3.0.4"
         },
+        "click": {
+            "hashes": [
+                "sha256:2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13",
+                "sha256:5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"
+            ],
+            "version": "==7.0"
+        },
         "graphql-core": {
             "hashes": [
                 "sha256:1488f2a5c2272dc9ba66e3042a6d1c30cea0db4c80bd1e911c6791ad6187d91b",
@@ -81,6 +88,10 @@
                 "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"
             ],
             "version": "==2.8"
+        },
+        "kofi": {
+            "editable": true,
+            "path": "."
         },
         "multidict": {
             "hashes": [
