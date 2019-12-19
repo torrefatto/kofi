@@ -9,7 +9,7 @@ from unittest import mock
 import yaml
 import pytest
 
-from kofi.config import read_config, DEFAULT_LOG_CONF
+from kofi.config import read_config, merge_configs, DEFAULT_LOG_CONF
 
 
 def fill_mock_conf(conf: T.Dict[T.Text, T.Any], tmpdir: py.path.local) -> T.Text:
@@ -19,6 +19,38 @@ def fill_mock_conf(conf: T.Dict[T.Text, T.Any], tmpdir: py.path.local) -> T.Text
         f.write(yaml.dump(conf))
 
     return conf_path
+
+
+@pytest.mark.parametrize(
+    "file_conf,shell_conf,result",
+    [
+        [
+            {"host": "1.3.1.2", "port": 1312, "log": {}},
+            {"host": "localhost", "port": 1000},
+            {"host": "localhost", "port": 1000, "log": {}},
+        ],
+        [
+            {
+                "host": "1.3.1.2",
+                "port": 1312,
+                "log": {"syslog": True, "log_file": "/tmp/kofi.log"},
+            },
+            {"port": 1000, "log": {"syslog": False}},
+            {
+                "host": "1.3.1.2",
+                "port": 1000,
+                "log": {"syslog": False, "log_file": "/tmp/kofi.log"},
+            },
+        ],
+    ],
+)
+def test_merge_conf(
+    file_conf: T.Dict[T.Text, T.Any],
+    shell_conf: T.Dict[T.Text, T.Any],
+    result: T.Dict[T.Text, T.Any],
+) -> None:
+    """Tests merge_configs in various cases."""
+    assert result == merge_configs(file_conf, shell_conf)
 
 
 @pytest.mark.parametrize(

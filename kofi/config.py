@@ -12,11 +12,35 @@ import typing as T
 import yaml
 
 
-def read_config() -> T.Dict[T.Text, T.Any]:
+def merge_configs(
+    config: T.Dict[T.Text, T.Any], shell_config: T.Dict[T.Text, T.Any]
+) -> T.Dict[T.Text, T.Any]:
+    """
+    Merge the configuration from file with the one from command
+    line parameters, favouring the latter.
+    """
+    out_config = {}
+    for key, val in config.items():
+        if key != "log":
+            out_config[key] = shell_config.get(key, config.get(key))
+    out_config["log"] = {}
+    if "log" in shell_config:
+        for key, val in config["log"].items():
+            out_config["log"][key] = shell_config["log"].get(
+                key, config["log"].get(key)
+            )
+    else:
+        out_config["log"] = config["log"]
+
+    return out_config
+
+
+def read_config(conf_file: T.Optional[T.Text] = None) -> T.Dict[T.Text, T.Any]:
     """
     Find the configuration file and parse it.
     """
-    conf_file = _find_conf()
+    if conf_file is None:
+        conf_file = _find_conf()
     if conf_file:
         with open(conf_file) as f:
             conf = yaml.safe_load(f)
