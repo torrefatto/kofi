@@ -15,11 +15,8 @@ def setup(config: T.Dict[T.Text, T.Any]) -> web.Application:
     """
     app = web.Application()
     app["config"] = config
-    print(f"CONFIG: {config}")
     app["log"] = setup_log(config["log"])
-    print("Log registered")
     app.add_routes(app_routes)
-    print(f"Routes added: {app_routes}")
     return app
 
 
@@ -30,12 +27,14 @@ def start(app: web.Application) -> None:
     web.run_app(app, host=app["config"]["host"], port=app["config"]["port"])
 
 
-def main() -> None:
+def run() -> None:
     """KoFi entrypoint."""
     config = read_config()
     app = setup(config)
     start(app)
 
 
-if __name__ == "__main__":
-    main()
+def run_from_shell(config: T.Dict[T.Text, T.Any]) -> None:
+    """KoFi shell entrypoint."""
+    app = setup(config)
+    start(app)

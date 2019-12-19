@@ -21,7 +21,6 @@ def setup_log(config: T.Dict[T.Text, T.Any]) -> logging.Logger:
     logger = logging.getLogger()
     logger.setLevel(level=level)
     for hdlr in handlers:
-        print(f"Handler -> {hdlr}")
         logger.addHandler(hdlr)
 
     return logger
