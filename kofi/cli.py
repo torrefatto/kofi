@@ -6,14 +6,43 @@ import typing as T
 
 import click
 
-from kofi.config import read_config, merge_configs
+from kofi.config import read_config, merge_configs, VALIDATE
 from kofi.main import run_from_shell
+
+
+def _validate(ctx: click.Context, param: T.Text, value: T.Any) -> None:
+    if value is not None:
+        try:
+            VALIDATE[param](value)  # type: ignore
+        except ValueError as e:
+            raise click.BadParameter(str(e))
+
+
+def _validate_host(ctx, param, value):
+    _validate(ctx, "host", value)
+
+
+def _validate_port(ctx, param, value):
+    _validate(ctx, "port", value)
 
 
 @click.command()
 @click.option("-c", "--config", "config_path", help="The path to the config file.")
-@click.option("-b", "--bind-address", "host", help="The address to bind kofi to.")
-@click.option("-p", "--port", "port", help="The port to bind kofi to.")
+@click.option(
+    "-b",
+    "--bind-address",
+    "host",
+    help="The address to bind kofi to.",
+    callback=_validate_host,
+)
+@click.option(
+    "-p",
+    "--port",
+    "port",
+    type=click.INT,
+    help="The port to bind kofi to.",
+    callback=_validate_port,
+)
 @click.option(
     "-l",
     "--log-level",
@@ -23,7 +52,9 @@ from kofi.main import run_from_shell
 )
 @click.option("--syslog", is_flag=True)
 @click.option("--log-file", "log_file", type=click.Path(exists=True))
+@click.pass_context
 def main(
+    ctx: click.Context,
     config_path: T.Optional[T.Text],
     host: T.Text,
     port: int,
