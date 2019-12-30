@@ -1,22 +1,28 @@
 # -*- encoding: utf-8 -*-
 """The webserver entrypoint."""
 
-from aiohttp import web
+from asyncio import AbstractEventLoop, get_event_loop
 import typing as T
+
+from aiohttp import web
 
 from kofi.config import read_config
 from kofi.log import setup_log
-from kofi.routes import app_routes
+from kofi.routes import generate_app_routes
 
 
-def setup(config: T.Dict[T.Text, T.Any]) -> web.Application:
+def setup(
+    config: T.Dict[T.Text, T.Any], loop: T.Optional[AbstractEventLoop] = None
+) -> web.Application:
     """
     Setup the application.
     """
-    app = web.Application()
+    if loop is None:
+        loop = get_event_loop()
+    app = web.Application(loop=loop)
     app["config"] = config
     app["log"] = setup_log(config["log"])
-    app.add_routes(app_routes)
+    app.add_routes(generate_app_routes(config))
     return app
 
 

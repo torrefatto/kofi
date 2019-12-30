@@ -50,8 +50,16 @@ def _validate_port(ctx, param, value):
     help="The log level",
     type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR"], case_sensitive=False),
 )
-@click.option("--syslog", is_flag=True)
-@click.option("--log-file", "log_file", type=click.Path(exists=True))
+@click.option("--syslog", help="Send the log also to the syslog", is_flag=True)
+@click.option(
+    "--log-file",
+    "log_file",
+    help="Send the log also to file",
+    type=click.Path(exists=True),
+)
+@click.option(
+    "--graphiql", "graphiql", help="Enable the graphiql facility", is_flag=True
+)
 @click.pass_context
 def main(
     ctx: click.Context,
@@ -61,6 +69,7 @@ def main(
     log_level: T.Text,
     syslog: bool,
     log_file: T.Optional[T.Text],
+    graphiql: bool,
 ):
     """Console script for kofi."""
     shell_config = {}  # type: T.Dict[T.Text, T.Any]
@@ -76,6 +85,8 @@ def main(
         log_conf["log_file"] = log_file
     if log_level or syslog or log_file:
         shell_config["log"] = log_conf
+    if graphiql:
+        shell_config["graphiql"] = True
     config = read_config(config_path)
     def_config = merge_configs(config, shell_config)
 

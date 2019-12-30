@@ -12,10 +12,15 @@ async def verify(req: web.Request) -> web.Response:
     req.app["log"].info(f"Received request for {cf}")
     if not cf:
         return web.json_response({"error": "malformed request", "cf": cf}, status=400)
-    if codicefiscale.is_valid(cf):
-        return web.json_response({"result": True, "cf": cf})
-    else:
-        return web.json_response({"result": False, "cf": cf})
+    try:
+        is_correct = codicefiscale.is_valid(cf)
+        is_omocode = codicefiscale.is_omocode(cf)
+    except ValueError:
+        is_correct = False
+        is_omocode = False
+    return web.json_response(
+        {"isCorrect": is_correct, "isOmocode": is_omocode, "cf": cf}
+    )
 
 
 async def interpolate(req: web.Request) -> web.Response:
@@ -34,4 +39,12 @@ async def interpolate(req: web.Request) -> web.Response:
         return web.json_response(
             {"error": "malformed request", "error_msg": str(e)}, status=400,
         )
-    return web.json_response({"result": cf})
+    except TypeError:
+        return web.json_response(
+            {
+                "error": "malformed request",
+                "error_msg": "Missing parameter (name/surname) from query",
+            },
+            status=400,
+        )
+    return web.json_response({"cf": cf})

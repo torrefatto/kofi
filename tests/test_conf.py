@@ -25,21 +25,23 @@ def fill_mock_conf(conf: T.Dict[T.Text, T.Any], tmpdir: py.path.local) -> T.Text
     "file_conf,shell_conf,result",
     [
         [
-            {"host": "1.3.1.2", "port": 1312, "log": {}},
-            {"host": "localhost", "port": 1000},
-            {"host": "localhost", "port": 1000, "log": {}},
+            {"host": "1.3.1.2", "port": 1312, "log": {}, "graphiql": True},
+            {"host": "localhost", "port": 1000, "graphiql": False},
+            {"host": "localhost", "port": 1000, "log": {}, "graphiql": False},
         ],
         [
             {
                 "host": "1.3.1.2",
                 "port": 1312,
                 "log": {"syslog": True, "log_file": "/tmp/kofi.log"},
+                "graphiql": False,
             },
-            {"port": 1000, "log": {"syslog": False}},
+            {"port": 1000, "log": {"syslog": False}, "graphiql": True},
             {
                 "host": "1.3.1.2",
                 "port": 1000,
                 "log": {"syslog": False, "log_file": "/tmp/kofi.log"},
+                "graphiql": True,
             },
         ],
     ],
@@ -61,11 +63,13 @@ def test_merge_conf(
                 "host": "127.0.0.1",
                 "port": 13121,
                 "log": {"level": "DEBUG", "syslog": True, "log_file": "/tmp/logfile",},
+                "graphiql": True,
             },
             {
                 "host": "127.0.0.1",
                 "port": 13121,
                 "log": {"level": "DEBUG", "syslog": True, "log_file": "/tmp/logfile",},
+                "graphiql": True,
             },
         ],
         [
@@ -74,14 +78,36 @@ def test_merge_conf(
                 "host": "127.0.0.1",
                 "port": 1312,
                 "log": {"level": "ERROR", "syslog": True},
+                "graphiql": False,
             },
         ],
         [
             {"host": "2001:ff:2::1"},
-            {"host": "2001:ff:2::1", "port": 1312, "log": DEFAULT_LOG_CONF},
+            {
+                "host": "2001:ff:2::1",
+                "port": 1312,
+                "log": DEFAULT_LOG_CONF,
+                "graphiql": False,
+            },
         ],
-        [{"port": 13121}, {"host": "0.0.0.0", "port": 13121, "log": DEFAULT_LOG_CONF}],
-        [{}, {"host": "0.0.0.0", "port": 1312, "log": DEFAULT_LOG_CONF}],
+        [
+            {"port": 13121},
+            {
+                "host": "0.0.0.0",
+                "port": 13121,
+                "log": DEFAULT_LOG_CONF,
+                "graphiql": False,
+            },
+        ],
+        [
+            {},
+            {
+                "host": "0.0.0.0",
+                "port": 1312,
+                "log": DEFAULT_LOG_CONF,
+                "graphiql": False,
+            },
+        ],
     ],
 )
 def test_override_conf(

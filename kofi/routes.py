@@ -8,6 +8,8 @@ REST:
     - `/api/verify` [GET]
       query parameters:
       - 'cf': the Codice Fiscale string
+      returns:
+      - `{"isCorrect": boolean, "isOmocode": boolean, "cf": str}`
     - `/api/interpolate` [GET]
       query parameters:
       - `name`
@@ -15,27 +17,31 @@ REST:
       - `gender`
       - `date_of_birth` in YYYYMMDD format
       - `place_of_birth`
+      returns:
+      cf- `{"cf": str}`
 
 GraphQL:
 
     - `/graphql`
     accepts the following queries
     ```
-    query verify(cf: $cf) {
+    query verify(cf: String!) {
         isCorrect
+        isOmocode
     }
     ```
     ```
     query interpolate(
-        name: $name
-        surname: $surname
-        gender: $gender
-        dateOfBirth: $dateOfBirth
-        placeOfBirth: $placeOfBirth
+        name: String!
+        surname: String!
+        gender: genderType!
+        dateOfBirth: String!
+        placeOfBirth: String!
     ) {
         codiceFiscale
     }
     ```
+    being `genderType` an enum comprising `M` and `F` values
 
 """
 
@@ -45,8 +51,15 @@ import typing as T
 from kofi import rest
 from kofi import graphql
 
-app_routes: T.List[web.RouteDef] = [
-    web.get("/api/verify", rest.verify),
-    web.get("/api/interpolate", rest.interpolate),
-    web.post("/graphql", graphql.graphql),
-]
+
+def generate_app_routes(conf: T.Dict[T.Text, T.Any]) -> T.List[web.RouteDef]:
+    """Generates the app routes using the configuration parameters."""
+    app_routes = [
+        web.get("/api/verify", rest.verify),
+        web.get("/api/interpolate", rest.interpolate),
+    ]
+    if conf.get("graphiql"):
+        app_routes.append(graphql.get_view(graphiql=True))
+    else:
+        app_routes.append(graphql.get_view(graphiql=False))
+    return app_routes

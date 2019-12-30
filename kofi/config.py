@@ -115,6 +115,14 @@ def _validate_log(log_conf: T.Dict[T.Text, T.Any]) -> T.Dict[T.Text, T.Any]:
     return conf
 
 
+def _validate_graphiql(graphiql_conf: T.Optional[bool]) -> bool:
+    if graphiql_conf is None:
+        return False
+    if isinstance(graphiql_conf, bool):
+        return graphiql_conf
+    raise ValueError(f"'graphiql' is invalid in configuration: {graphiql_conf}")
+
+
 DEFAULT_CONF_PATH = [
     os.path.join(os.path.curdir, "kofi.yml"),
     os.path.join(pathlib.Path.home(), "kofi.yml"),
@@ -122,6 +130,11 @@ DEFAULT_CONF_PATH = [
 ]
 
 DEFAULT_LOG_CONF = {"level": "ERROR", "syslog": False}
-DEFAULT = {"host": "0.0.0.0", "port": 1312, "log": DEFAULT_LOG_CONF}
+DEFAULT = {"host": "0.0.0.0", "port": 1312, "log": DEFAULT_LOG_CONF, "graphiql": False}
 
-VALIDATE = {"host": _validate_host, "port": _validate_port, "log": _validate_log}
+VALIDATE = {
+    "host": _validate_host,
+    "port": _validate_port,
+    "log": _validate_log,
+    "graphiql": _validate_graphiql,
+}
