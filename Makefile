@@ -22,6 +22,7 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
+VERSION := 0.1
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -80,3 +81,12 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
+
+docker-build: ## build the production image
+	docker build -t torrefatto/kofi:$(VERSION) .
+
+docker-dev-build: ## build the development image
+	docker build -t torrefatto/kofi-dev:$(VERSION) -d Dockerfile-dev
+
+docker-dev-run: ## run the development container
+	docker run -p 1312:1312 -t torrefatto/kofi-dev:$(VERSION) --graphiql

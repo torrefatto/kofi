@@ -1,0 +1,16 @@
+FROM python:3.8
+ARG UID=1000
+ARG GID=1000
+
+WORKDIR /src
+RUN mkdir /var/kofi \
+    && groupadd -g ${GID} kofi \
+    && useradd -d /src -u ${UID} -g ${GID} kofi \
+ && chown kofi:kofi /src
+USER kofi
+ADD --chown=kofi:kofi . /src
+RUN pip install --user -e .
+
+EXPOSE 1312
+
+ENTRYPOINT ["/src/.local/bin/kofi"]
