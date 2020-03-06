@@ -10,7 +10,11 @@ with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
 requirements = [
-    "Click>=7.0",
+    "aiohttp==3.6.2",
+    "aiohttp-graphql==1.0.0",
+    "python-codicefiscale==0.3.7",
+    "pyyaml",
+    "Click>=7.0,<8",
 ]
 
 setup_requirements = []

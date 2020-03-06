@@ -9,12 +9,12 @@ mock = "*"
 ipdb = "*"
 pytest-cov = "*"
 pytest-aiohttp = "*"
+sphinx = "*"
+python-docs-theme = "*"
+watchdog = "*"
+argh = "*"
 
 [packages]
-aiohttp = "*"
-python-codicefiscale = "*"
-aiohttp-graphql = "*"
-pyyaml = "*"
 kofi = {editable = true,path = "."}
 
 [requires]
