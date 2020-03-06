@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>kofi.graphql &#8212; KoFi 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="shortcut icon" type="image/png" href="../../_static/py.png" />
+    
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    
+     
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+    <li><img src="../../_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="../../index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kofi.graphql</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- encoding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;This module holds the GraphQL implementation.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">T</span>
+
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span> <span class="nn">aiohttp_graphql</span> <span class="kn">import</span> <span class="n">GraphQLView</span>
+<span class="kn">from</span> <span class="nn">codicefiscale</span> <span class="kn">import</span> <span class="n">codicefiscale</span>
+<span class="kn">from</span> <span class="nn">graphql</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GraphQLArgument</span><span class="p">,</span>
+    <span class="n">GraphQLNonNull</span><span class="p">,</span>
+    <span class="n">GraphQLString</span><span class="p">,</span>
+    <span class="n">GraphQLBoolean</span><span class="p">,</span>
+    <span class="n">GraphQLField</span><span class="p">,</span>
+    <span class="n">GraphQLSchema</span><span class="p">,</span>
+    <span class="n">GraphQLEnumValue</span><span class="p">,</span>
+    <span class="n">GraphQLObjectType</span><span class="p">,</span>
+    <span class="n">GraphQLEnumType</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">graphql.execution.base</span> <span class="kn">import</span> <span class="n">ResolveInfo</span>
+
+
+<div class="viewcode-block" id="is_correct"><a class="viewcode-back" href="../../kofi.html#kofi.graphql.is_correct">[docs]</a><span class="k">def</span> <span class="nf">is_correct</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cf&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cf</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">codicefiscale</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">cf</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing argument.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_omocode"><a class="viewcode-back" href="../../kofi.html#kofi.graphql.is_omocode">[docs]</a><span class="k">def</span> <span class="nf">is_omocode</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cf&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cf</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">codicefiscale</span><span class="o">.</span><span class="n">is_omocode</span><span class="p">(</span><span class="n">cf</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing argument.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resolve_verify"><a class="viewcode-back" href="../../kofi.html#kofi.graphql.resolve_verify">[docs]</a><span class="k">def</span> <span class="nf">resolve_verify</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;isOmocode&quot;</span><span class="p">:</span> <span class="n">is_omocode</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">),</span>
+        <span class="s2">&quot;isCorrect&quot;</span><span class="p">:</span> <span class="n">is_correct</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">),</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="resolve_interpolate"><a class="viewcode-back" href="../../kofi.html#kofi.graphql.resolve_interpolate">[docs]</a><span class="k">def</span> <span class="nf">resolve_interpolate</span><span class="p">(</span>
+    <span class="n">root</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">ResolveInfo</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">]:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="n">surname</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;surname&quot;</span><span class="p">)</span>
+    <span class="n">gender</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gender&quot;</span><span class="p">)</span>
+    <span class="n">place_of_birth</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;placeOfBirth&quot;</span><span class="p">)</span>
+    <span class="n">date_of_birth</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dateOfBirth&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">surname</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">place_of_birth</span><span class="p">,</span> <span class="n">date_of_birth</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;codiceFiscale&quot;</span><span class="p">:</span> <span class="n">codicefiscale</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                <span class="n">surname</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">date_of_birth</span><span class="p">,</span> <span class="n">place_of_birth</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing argument.&quot;</span><span class="p">)</span></div>
+
+
+<span class="n">codiceFiscaleArg</span> <span class="o">=</span> <span class="n">GraphQLArgument</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">GraphQLNonNull</span><span class="p">(</span><span class="n">GraphQLString</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The Codice Fiscale string.&quot;</span>
+<span class="p">)</span>
+
+<span class="n">verifyType</span> <span class="o">=</span> <span class="n">GraphQLObjectType</span><span class="p">(</span>
+    <span class="s2">&quot;verifyType&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The result of checks on the CF.&quot;</span><span class="p">,</span>
+    <span class="n">fields</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;isOmocode&quot;</span><span class="p">:</span> <span class="n">GraphQLField</span><span class="p">(</span>
+            <span class="n">GraphQLBoolean</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the CF is omocode, .&quot;</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;isCorrect&quot;</span><span class="p">:</span> <span class="n">GraphQLField</span><span class="p">(</span><span class="n">GraphQLBoolean</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the CF is correct.&quot;</span><span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">nameArg</span> <span class="o">=</span> <span class="n">GraphQLArgument</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">GraphQLNonNull</span><span class="p">(</span><span class="n">GraphQLString</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Person&#39;s first name(s)&quot;</span>
+<span class="p">)</span>
+
+<span class="n">surnameArg</span> <span class="o">=</span> <span class="n">GraphQLArgument</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">GraphQLNonNull</span><span class="p">(</span><span class="n">GraphQLString</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Person&#39;s last name(s)&quot;</span>
+<span class="p">)</span>
+
+<span class="n">genderType</span> <span class="o">=</span> <span class="n">GraphQLEnumType</span><span class="p">(</span>
+    <span class="s2">&quot;Gender&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;One&#39;s official gender.&quot;</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="n">GraphQLEnumValue</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Male&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;F&quot;</span><span class="p">:</span> <span class="n">GraphQLEnumValue</span><span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Female&quot;</span><span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">genderArg</span> <span class="o">=</span> <span class="n">GraphQLArgument</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">GraphQLNonNull</span><span class="p">(</span><span class="n">genderType</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Person&#39;s official gender&quot;</span>
+<span class="p">)</span>
+
+<span class="n">placeOfBirthArg</span> <span class="o">=</span> <span class="n">GraphQLArgument</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">GraphQLNonNull</span><span class="p">(</span><span class="n">GraphQLString</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Person&#39;s place of birth&quot;</span>
+<span class="p">)</span>
+
+<span class="n">dateOfBirthArg</span> <span class="o">=</span> <span class="n">GraphQLArgument</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">GraphQLNonNull</span><span class="p">(</span><span class="n">GraphQLString</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Person&#39;s date of birth&quot;</span>
+<span class="p">)</span>
+
+<span class="n">interpolateType</span> <span class="o">=</span> <span class="n">GraphQLObjectType</span><span class="p">(</span>
+    <span class="s2">&quot;interpolateType&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The result of person&#39;s data interpolation&quot;</span><span class="p">,</span>
+    <span class="n">fields</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;codiceFiscale&quot;</span><span class="p">:</span> <span class="n">GraphQLField</span><span class="p">(</span>
+            <span class="n">GraphQLString</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;One person&#39;s codice fiscale.&quot;</span>
+        <span class="p">)</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">codiceFiscaleQuery</span> <span class="o">=</span> <span class="n">GraphQLObjectType</span><span class="p">(</span>
+    <span class="s2">&quot;codiceFiscaleQuery&quot;</span><span class="p">,</span>
+    <span class="n">fields</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;verify&quot;</span><span class="p">:</span> <span class="n">GraphQLField</span><span class="p">(</span>
+            <span class="n">verifyType</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The body of the verify response.&quot;</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cf&quot;</span><span class="p">:</span> <span class="n">codiceFiscaleArg</span><span class="p">},</span>
+            <span class="n">resolver</span><span class="o">=</span><span class="n">resolve_verify</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;interpolate&quot;</span><span class="p">:</span> <span class="n">GraphQLField</span><span class="p">(</span>
+            <span class="n">interpolateType</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Query to obtain one person&#39;s codice fiscale&quot;</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">nameArg</span><span class="p">,</span>
+                <span class="s2">&quot;surname&quot;</span><span class="p">:</span> <span class="n">surnameArg</span><span class="p">,</span>
+                <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="n">genderArg</span><span class="p">,</span>
+                <span class="s2">&quot;dateOfBirth&quot;</span><span class="p">:</span> <span class="n">dateOfBirthArg</span><span class="p">,</span>
+                <span class="s2">&quot;placeOfBirth&quot;</span><span class="p">:</span> <span class="n">placeOfBirthArg</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">resolver</span><span class="o">=</span><span class="n">resolve_interpolate</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="n">GraphQLSchema</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">codiceFiscaleQuery</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="p">[</span><span class="n">verifyType</span><span class="p">,</span> <span class="n">interpolateType</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="get_view"><a class="viewcode-back" href="../../kofi.html#kofi.graphql.get_view">[docs]</a><span class="k">def</span> <span class="nf">get_view</span><span class="p">(</span><span class="n">graphiql</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">web</span><span class="o">.</span><span class="n">View</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the graphql aiohttp view.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s2">&quot;/graphql&quot;</span><span class="p">,</span> <span class="n">GraphQLView</span><span class="p">(</span><span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span> <span class="n">graphiql</span><span class="o">=</span><span class="n">graphiql</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+    <li><img src="../../_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="../../index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../../copyright.html">Copyright</a> 2019, Leonardo Barcaroli.
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+
+    Last updated on None.
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+
+  </body>
+</html>

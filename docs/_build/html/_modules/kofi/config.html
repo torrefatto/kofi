@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>kofi.config &#8212; KoFi 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="shortcut icon" type="image/png" href="../../_static/py.png" />
+    
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    
+     
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+    <li><img src="../../_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="../../index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kofi.config</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- encoding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Read and validate the config.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">ipaddress</span> <span class="kn">import</span> <span class="n">IPv4Address</span><span class="p">,</span> <span class="n">IPv6Address</span><span class="p">,</span> <span class="n">AddressValueError</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">T</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+
+<div class="viewcode-block" id="merge_configs"><a class="viewcode-back" href="../../kofi.html#kofi.config.merge_configs">[docs]</a><span class="k">def</span> <span class="nf">merge_configs</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">shell_config</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge the configuration from file with the one from command</span>
+<span class="sd">    line parameters, favouring the latter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out_config</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;log&quot;</span><span class="p">:</span>
+            <span class="n">out_config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">shell_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+    <span class="n">out_config</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="s2">&quot;log&quot;</span> <span class="ow">in</span> <span class="n">shell_config</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out_config</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">shell_config</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">key</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out_config</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">out_config</span></div>
+
+
+<div class="viewcode-block" id="read_config"><a class="viewcode-back" href="../../kofi.html#kofi.config.read_config">[docs]</a><span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="n">conf_file</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the configuration file and parse it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">conf_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">conf_file</span> <span class="o">=</span> <span class="n">_find_conf</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">conf_file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">conf</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="n">out_conf</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">conf_k</span><span class="p">,</span> <span class="n">conf_v</span> <span class="ow">in</span> <span class="n">DEFAULT</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out_conf</span><span class="p">[</span><span class="n">conf_k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_validate</span><span class="p">(</span><span class="n">conf_k</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">conf_k</span><span class="p">),</span> <span class="n">conf_v</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out_conf</span> <span class="o">=</span> <span class="n">DEFAULT</span>
+
+    <span class="k">return</span> <span class="n">out_conf</span></div>
+
+
+<span class="k">def</span> <span class="nf">_find_conf</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">conf_path</span> <span class="ow">in</span> <span class="n">DEFAULT_CONF_PATH</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">conf_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">conf_path</span>
+
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">datum</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">datum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">VALIDATE</span><span class="p">[</span><span class="n">key</span><span class="p">](</span><span class="n">datum</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">default</span>
+
+
+<span class="k">def</span> <span class="nf">_validate_host</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">host</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;localhost&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">host</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">IPv4Address</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">host</span>
+    <span class="k">except</span> <span class="n">AddressValueError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">IPv6Address</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">host</span>
+        <span class="k">except</span> <span class="n">AddressValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;host&#39; is invalid in configuration: </span><span class="si">{host}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_validate_port</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">port</span> <span class="ow">and</span> <span class="n">port</span> <span class="o">&lt;</span> <span class="mi">65535</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">port</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;port&#39; is invalid in configuration: </span><span class="si">{port}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_validate_log</span><span class="p">(</span><span class="n">log_conf</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="n">log_level</span> <span class="o">=</span> <span class="n">log_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;level&quot;</span><span class="p">,</span> <span class="n">DEFAULT_LOG_CONF</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">log_level</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;WARNING&quot;</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;level&#39; is invalid in configuration: </span><span class="si">{log_level}</span><span class="se">\</span>
+<span class="s2">                Allowed values are (&#39;DEBUG&#39;, &#39;INFO&#39;, &#39;WARNING&#39;, &#39;ERROR&#39;)&quot;</span>
+        <span class="p">)</span>
+    <span class="n">syslog</span> <span class="o">=</span> <span class="n">log_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;syslog&quot;</span><span class="p">,</span> <span class="n">DEFAULT_LOG_CONF</span><span class="p">[</span><span class="s2">&quot;syslog&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">syslog</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;syslog&#39; is invalid in configuration: </span><span class="si">{syslog}</span><span class="se">\</span>
+<span class="s2">                Allowed values are (&#39;true&#39;, &#39;false&#39;)&quot;</span>
+        <span class="p">)</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="n">log_level</span><span class="p">,</span> <span class="s2">&quot;syslog&quot;</span><span class="p">:</span> <span class="n">syslog</span><span class="p">}</span>
+    <span class="n">log_file</span> <span class="o">=</span> <span class="n">log_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log_file&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">log_file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">log_file</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;log_file&#39; is invalid in configuration: </span><span class="si">{log_file}</span><span class="se">\</span>
+<span class="s2">                    Base directory does not exist.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;log_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_file</span>
+
+    <span class="k">return</span> <span class="n">conf</span>
+
+
+<span class="k">def</span> <span class="nf">_validate_graphiql</span><span class="p">(</span><span class="n">graphiql_conf</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">graphiql_conf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">graphiql_conf</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">graphiql_conf</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;graphiql&#39; is invalid in configuration: </span><span class="si">{graphiql_conf}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="n">DEFAULT_CONF_PATH</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span> <span class="s2">&quot;kofi.yml&quot;</span><span class="p">),</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">(),</span> <span class="s2">&quot;kofi.yml&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;/etc/kofi/kofi.yml&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">DEFAULT_LOG_CONF</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;syslog&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="n">DEFAULT</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">1312</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">:</span> <span class="n">DEFAULT_LOG_CONF</span><span class="p">,</span> <span class="s2">&quot;graphiql&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+<span class="n">VALIDATE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">_validate_host</span><span class="p">,</span>
+    <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="n">_validate_port</span><span class="p">,</span>
+    <span class="s2">&quot;log&quot;</span><span class="p">:</span> <span class="n">_validate_log</span><span class="p">,</span>
+    <span class="s2">&quot;graphiql&quot;</span><span class="p">:</span> <span class="n">_validate_graphiql</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+    <li><img src="../../_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="../../index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../../copyright.html">Copyright</a> 2019, Leonardo Barcaroli.
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+
+    Last updated on None.
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+
+  </body>
+</html>

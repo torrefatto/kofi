@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>kofi.rest &#8212; KoFi 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="shortcut icon" type="image/png" href="../../_static/py.png" />
+    
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    
+     
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+    <li><img src="../../_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="../../index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kofi.rest</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- encoding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;The views that handle the REST API are defined here.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+
+<span class="kn">from</span> <span class="nn">codicefiscale</span> <span class="kn">import</span> <span class="n">codicefiscale</span>
+
+
+<div class="viewcode-block" id="verify"><a class="viewcode-back" href="../../kofi.html#kofi.rest.verify">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Validate and handle verify request.&quot;&quot;&quot;</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cf&quot;</span><span class="p">)</span>
+    <span class="n">req</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received request for </span><span class="si">{cf}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cf</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;malformed request&quot;</span><span class="p">,</span> <span class="s2">&quot;cf&quot;</span><span class="p">:</span> <span class="n">cf</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">is_correct</span> <span class="o">=</span> <span class="n">codicefiscale</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">cf</span><span class="p">)</span>
+        <span class="n">is_omocode</span> <span class="o">=</span> <span class="n">codicefiscale</span><span class="o">.</span><span class="n">is_omocode</span><span class="p">(</span><span class="n">cf</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">is_correct</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">is_omocode</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;isCorrect&quot;</span><span class="p">:</span> <span class="n">is_correct</span><span class="p">,</span> <span class="s2">&quot;isOmocode&quot;</span><span class="p">:</span> <span class="n">is_omocode</span><span class="p">,</span> <span class="s2">&quot;cf&quot;</span><span class="p">:</span> <span class="n">cf</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../kofi.html#kofi.rest.interpolate">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="n">req</span><span class="p">:</span> <span class="n">web</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Validate and handle interpolate request.&quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="n">surname</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;surname&quot;</span><span class="p">)</span>
+    <span class="n">gender</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gender&quot;</span><span class="p">)</span>
+    <span class="n">date_of_birth</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date_of_birth&quot;</span><span class="p">)</span>
+    <span class="n">place_of_birth</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;place_of_birth&quot;</span><span class="p">)</span>
+    <span class="n">req</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Received request for (</span><span class="si">{name}</span><span class="s2">, </span><span class="si">{surname}</span><span class="s2">, </span><span class="si">{gender}</span><span class="s2">, </span><span class="si">{date_of_birth}</span><span class="s2">, </span><span class="si">{place_of_birth}</span><span class="s2">)&quot;</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cf</span> <span class="o">=</span> <span class="n">codicefiscale</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">surname</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">date_of_birth</span><span class="p">,</span> <span class="n">place_of_birth</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;malformed request&quot;</span><span class="p">,</span> <span class="s2">&quot;error_msg&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="n">status</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;malformed request&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;error_msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Missing parameter (name/surname) from query&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">status</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span><span class="s2">&quot;cf&quot;</span><span class="p">:</span> <span class="n">cf</span><span class="p">})</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+    <li><img src="../../_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="../../index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../../copyright.html">Copyright</a> 2019, Leonardo Barcaroli.
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+
+    Last updated on None.
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+
+  </body>
+</html>

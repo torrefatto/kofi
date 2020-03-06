@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>KoFi &#8212; KoFi 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to KoFi’s documentation!" href="index.html" />
+    <link rel="shortcut icon" type="image/png" href="_static/py.png" />
+    
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    
+     
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to KoFi’s documentation!"
+             accesskey="P">previous</a> |</li>
+    <li><img src="_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kofi">
+<h1>KoFi<a class="headerlink" href="#kofi" title="Permalink to this headline">¶</a></h1>
+<p>Microservice to check or create a Codice Fiscale</p>
+<ul class="simple">
+<li><p>Free software: GPLv3</p></li>
+<li><p>For documentation, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code> in a properly configured environment (see <a class="reference internal" href="#develop">Develop</a>).</p></li>
+<li><p>Dumb as it should be</p></li>
+</ul>
+<div class="section" id="how-to">
+<h2>How to<a class="headerlink" href="#how-to" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="develop">
+<h3>Develop<a class="headerlink" href="#develop" title="Permalink to this headline">¶</a></h3>
+<p>To prepare a development environment use <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/">pipenv</a>. Install it and then run</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ pipenv install --dev .
+</pre></div>
+</div>
+</div></blockquote>
+<p>To enter a development-ready environment</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ pipenv shell
+</pre></div>
+</div>
+</div></blockquote>
+<p>You’ll get a shell with all the needed dependencies. If you have <a class="reference external" href="https://www.gnu.org/software/make/">GNU_make</a> installed, a set
+of targets are available to ease the tasks. In the following, these targets will be used.
+You can avoid using them, reading the <cite>Makefile</cite> source and using the commands therein instead.</p>
+<p>To start a development session</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ pipenv run kofi
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="production">
+<h3>Production<a class="headerlink" href="#production" title="Permalink to this headline">¶</a></h3>
+<p>Build the package and run it:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ make dist
+</pre></div>
+</div>
+</div></blockquote>
+<p>Otherwise, build the docker image:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ make docker-image
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">KoFi</a><ul>
+<li><a class="reference internal" href="#how-to">How to</a><ul>
+<li><a class="reference internal" href="#develop">Develop</a></li>
+<li><a class="reference internal" href="#production">Production</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to KoFi’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="next chapter">Installation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/readme.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to KoFi’s documentation!"
+             >previous</a> |</li>
+    <li><img src="_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="copyright.html">Copyright</a> 2019, Leonardo Barcaroli.
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+
+    Last updated on None.
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+
+  </body>
+</html>

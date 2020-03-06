@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>kofi package &#8212; KoFi 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="kofi" href="modules.html" />
+    <link rel="shortcut icon" type="image/png" href="_static/py.png" />
+    
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    
+     
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="kofi"
+             accesskey="P">previous</a> |</li>
+    <li><img src="_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">kofi</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="kofi-package">
+<h1>kofi package<a class="headerlink" href="#kofi-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kofi.cli">
+<span id="kofi-cli-module"></span><h2>kofi.cli module<a class="headerlink" href="#module-kofi.cli" title="Permalink to this headline">¶</a></h2>
+<p>Console script for kofi.</p>
+</div>
+<div class="section" id="module-kofi.config">
+<span id="kofi-config-module"></span><h2>kofi.config module<a class="headerlink" href="#module-kofi.config" title="Permalink to this headline">¶</a></h2>
+<p>Read and validate the config.</p>
+<dl class="function">
+<dt id="kofi.config.merge_configs">
+<code class="sig-prename descclassname">kofi.config.</code><code class="sig-name descname">merge_configs</code><span class="sig-paren">(</span><em class="sig-param">config: Dict[str, Any], shell_config: Dict[str, Any]</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/kofi/config.html#merge_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.config.merge_configs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge the configuration from file with the one from command
+line parameters, favouring the latter.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.config.read_config">
+<code class="sig-prename descclassname">kofi.config.</code><code class="sig-name descname">read_config</code><span class="sig-paren">(</span><em class="sig-param">conf_file: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="_modules/kofi/config.html#read_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.config.read_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the configuration file and parse it.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kofi.graphql">
+<span id="kofi-graphql-module"></span><h2>kofi.graphql module<a class="headerlink" href="#module-kofi.graphql" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the GraphQL implementation.</p>
+<dl class="function">
+<dt id="kofi.graphql.get_view">
+<code class="sig-prename descclassname">kofi.graphql.</code><code class="sig-name descname">get_view</code><span class="sig-paren">(</span><em class="sig-param">graphiql: bool</em><span class="sig-paren">)</span> &#x2192; aiohttp.web_urldispatcher.View<a class="reference internal" href="_modules/kofi/graphql.html#get_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.graphql.get_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the graphql aiohttp view.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.graphql.is_correct">
+<code class="sig-prename descclassname">kofi.graphql.</code><code class="sig-name descname">is_correct</code><span class="sig-paren">(</span><em class="sig-param">root: Any, info: Any, **args: Dict[str, Any]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/kofi/graphql.html#is_correct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.graphql.is_correct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kofi.graphql.is_omocode">
+<code class="sig-prename descclassname">kofi.graphql.</code><code class="sig-name descname">is_omocode</code><span class="sig-paren">(</span><em class="sig-param">root: Any, info: Any, **args: Dict[str, Any]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/kofi/graphql.html#is_omocode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.graphql.is_omocode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kofi.graphql.resolve_interpolate">
+<code class="sig-prename descclassname">kofi.graphql.</code><code class="sig-name descname">resolve_interpolate</code><span class="sig-paren">(</span><em class="sig-param">root: Any</em>, <em class="sig-param">info: graphql.execution.base.ResolveInfo</em>, <em class="sig-param">**args: Any</em><span class="sig-paren">)</span> &#x2192; Dict[str, str]<a class="reference internal" href="_modules/kofi/graphql.html#resolve_interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.graphql.resolve_interpolate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kofi.graphql.resolve_verify">
+<code class="sig-prename descclassname">kofi.graphql.</code><code class="sig-name descname">resolve_verify</code><span class="sig-paren">(</span><em class="sig-param">root: Any</em>, <em class="sig-param">info: Any</em>, <em class="sig-param">**args: Any</em><span class="sig-paren">)</span> &#x2192; Dict[str, bool]<a class="reference internal" href="_modules/kofi/graphql.html#resolve_verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.graphql.resolve_verify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-kofi.log">
+<span id="kofi-log-module"></span><h2>kofi.log module<a class="headerlink" href="#module-kofi.log" title="Permalink to this headline">¶</a></h2>
+<p>In this module are the tools to configure the logger.</p>
+<dl class="function">
+<dt id="kofi.log.setup_console_handler">
+<code class="sig-prename descclassname">kofi.log.</code><code class="sig-name descname">setup_console_handler</code><span class="sig-paren">(</span><em class="sig-param">fmt: logging.Formatter</em>, <em class="sig-param">level: int</em><span class="sig-paren">)</span> &#x2192; logging.Handler<a class="reference internal" href="_modules/kofi/log.html#setup_console_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.log.setup_console_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the handler that outputs on console.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.log.setup_file_handler">
+<code class="sig-prename descclassname">kofi.log.</code><code class="sig-name descname">setup_file_handler</code><span class="sig-paren">(</span><em class="sig-param">filename: str</em>, <em class="sig-param">fmt: logging.Formatter</em>, <em class="sig-param">level: int</em><span class="sig-paren">)</span> &#x2192; logging.Handler<a class="reference internal" href="_modules/kofi/log.html#setup_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.log.setup_file_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the file handler.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.log.setup_formatter">
+<code class="sig-prename descclassname">kofi.log.</code><code class="sig-name descname">setup_formatter</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; logging.Formatter<a class="reference internal" href="_modules/kofi/log.html#setup_formatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.log.setup_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setting up a custom formatter.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.log.setup_log">
+<code class="sig-prename descclassname">kofi.log.</code><code class="sig-name descname">setup_log</code><span class="sig-paren">(</span><em class="sig-param">config: Dict[str, Any]</em><span class="sig-paren">)</span> &#x2192; logging.Logger<a class="reference internal" href="_modules/kofi/log.html#setup_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.log.setup_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the logger.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.log.setup_syslog_handler">
+<code class="sig-prename descclassname">kofi.log.</code><code class="sig-name descname">setup_syslog_handler</code><span class="sig-paren">(</span><em class="sig-param">fmt: logging.Formatter</em>, <em class="sig-param">level: int</em><span class="sig-paren">)</span> &#x2192; logging.Handler<a class="reference internal" href="_modules/kofi/log.html#setup_syslog_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.log.setup_syslog_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the syslog handler.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kofi.main">
+<span id="kofi-main-module"></span><h2>kofi.main module<a class="headerlink" href="#module-kofi.main" title="Permalink to this headline">¶</a></h2>
+<p>The webserver entrypoint.</p>
+<dl class="function">
+<dt id="kofi.main.run">
+<code class="sig-prename descclassname">kofi.main.</code><code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/kofi/main.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.main.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>KoFi entrypoint.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.main.run_from_shell">
+<code class="sig-prename descclassname">kofi.main.</code><code class="sig-name descname">run_from_shell</code><span class="sig-paren">(</span><em class="sig-param">config: Dict[str, Any]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/kofi/main.html#run_from_shell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.main.run_from_shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>KoFi shell entrypoint.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.main.setup">
+<code class="sig-prename descclassname">kofi.main.</code><code class="sig-name descname">setup</code><span class="sig-paren">(</span><em class="sig-param">config: Dict[str, Any], loop: Optional[asyncio.events.AbstractEventLoop] = None</em><span class="sig-paren">)</span> &#x2192; aiohttp.web_app.Application<a class="reference internal" href="_modules/kofi/main.html#setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.main.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the application.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.main.start">
+<code class="sig-prename descclassname">kofi.main.</code><code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">app: aiohttp.web_app.Application</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/kofi/main.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.main.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the application.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kofi.rest">
+<span id="kofi-rest-module"></span><h2>kofi.rest module<a class="headerlink" href="#module-kofi.rest" title="Permalink to this headline">¶</a></h2>
+<p>The views that handle the REST API are defined here.</p>
+<dl class="function">
+<dt id="kofi.rest.interpolate">
+<em class="property">async </em><code class="sig-prename descclassname">kofi.rest.</code><code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><em class="sig-param">req: aiohttp.web_request.Request</em><span class="sig-paren">)</span> &#x2192; aiohttp.web_response.Response<a class="reference internal" href="_modules/kofi/rest.html#interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.rest.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate and handle interpolate request.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kofi.rest.verify">
+<em class="property">async </em><code class="sig-prename descclassname">kofi.rest.</code><code class="sig-name descname">verify</code><span class="sig-paren">(</span><em class="sig-param">req: aiohttp.web_request.Request</em><span class="sig-paren">)</span> &#x2192; aiohttp.web_response.Response<a class="reference internal" href="_modules/kofi/rest.html#verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.rest.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate and handle verify request.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kofi.routes">
+<span id="kofi-routes-module"></span><h2>kofi.routes module<a class="headerlink" href="#module-kofi.routes" title="Permalink to this headline">¶</a></h2>
+<p>The routes.</p>
+<p>There is a REST API and a GraphQL API.</p>
+<p>REST:</p>
+<p><code class="docutils literal notranslate"><span class="pre">/api/verify</span></code> [GET]
+query parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cf</span></code>: the Codice Fiscale string</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">{&quot;isCorrect&quot;:</span> <span class="pre">boolean,</span> <span class="pre">&quot;isOmocode&quot;:</span> <span class="pre">boolean,</span> <span class="pre">&quot;cf&quot;:</span> <span class="pre">str}</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">/api/interpolate</span></code> [GET]
+query parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">surname</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gender</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date_of_birth</span></code> in YYYYMMDD format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">place_of_birth</span></code></p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>returns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">{&quot;cf&quot;:</span> <span class="pre">str}</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p>GraphQL:</p>
+<p><code class="docutils literal notranslate"><span class="pre">/graphql</span></code>
+accepts the following queries</p>
+<blockquote>
+<div><div class="highlight-graphql notranslate"><div class="highlight"><pre><span></span><span class="kt">query</span> <span class="nc">verify</span><span class="p">(</span>cf: <span class="nc">String</span><span class="p">!)</span> <span class="p">{</span>
+    <span class="nc">isCorrect</span>
+    <span class="nc">isOmocode</span>
+<span class="p">}</span>
+
+<span class="kt">query</span> <span class="nc">interpolate</span><span class="p">(</span>
+    name: <span class="nc">String</span><span class="p">!</span>
+    surname: <span class="nc">String</span><span class="p">!</span>
+    gender: <span class="nc">genderType</span><span class="p">!</span>
+    dateOfBirth: <span class="nc">String</span><span class="p">!</span>
+    placeOfBirth: <span class="nc">String</span><span class="p">!</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="nc">codiceFiscale</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>being <code class="docutils literal notranslate"><span class="pre">genderType</span></code> an enum comprising <code class="docutils literal notranslate"><span class="pre">M</span></code> and <code class="docutils literal notranslate"><span class="pre">F</span></code> values</p>
+<dl class="function">
+<dt id="kofi.routes.generate_app_routes">
+<code class="sig-prename descclassname">kofi.routes.</code><code class="sig-name descname">generate_app_routes</code><span class="sig-paren">(</span><em class="sig-param">conf: Dict[str, Any]</em><span class="sig-paren">)</span> &#x2192; List[aiohttp.web_routedef.RouteDef]<a class="reference internal" href="_modules/kofi/routes.html#generate_app_routes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kofi.routes.generate_app_routes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the app routes using the configuration parameters.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kofi">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kofi" title="Permalink to this headline">¶</a></h2>
+<p>Top-level package for KoFi.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">kofi package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kofi.cli">kofi.cli module</a></li>
+<li><a class="reference internal" href="#module-kofi.config">kofi.config module</a></li>
+<li><a class="reference internal" href="#module-kofi.graphql">kofi.graphql module</a></li>
+<li><a class="reference internal" href="#module-kofi.log">kofi.log module</a></li>
+<li><a class="reference internal" href="#module-kofi.main">kofi.main module</a></li>
+<li><a class="reference internal" href="#module-kofi.rest">kofi.rest module</a></li>
+<li><a class="reference internal" href="#module-kofi.routes">kofi.routes module</a></li>
+<li><a class="reference internal" href="#module-kofi">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">kofi</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/kofi.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="kofi"
+             >previous</a> |</li>
+    <li><img src="_static/py.png" alt=""
+             style="vertical-align: middle; margin-top: -1px"/></li>
+    <li><a href="https://www.python.org/">Python</a> &#187;</li>
+    
+    <a href="index.html">KoFi 0.1.0 documentation</a> &#187;
+    
+
+          <li class="nav-item nav-item-1"><a href="modules.html" >kofi</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="copyright.html">Copyright</a> 2019, Leonardo Barcaroli.
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+
+    Last updated on None.
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+
+  </body>
+</html>
