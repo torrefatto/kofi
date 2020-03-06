@@ -6,10 +6,8 @@ from setuptools import setup, find_packages
 with open("README.rst") as readme_file:
     readme = readme_file.read()
 
-with open("HISTORY.rst") as history_file:
-    history = history_file.read()
-
 requirements = [
+    "graphql-core>=2.3,<3",
     "aiohttp==3.6.2",
     "aiohttp-graphql==1.0.0",
     "python-codicefiscale==0.3.7",
@@ -40,7 +38,7 @@ setup(
     entry_points={"console_scripts": ["kofi=kofi.cli:main",],},
     install_requires=requirements,
     license="MIT license",
-    long_description=readme + "\n\n" + history,
+    long_description=readme,
     include_package_data=True,
     keywords="kofi",
     name="kofi",
