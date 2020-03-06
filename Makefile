@@ -89,4 +89,4 @@ docker-dev-build: ## build the development image
 	docker build -t torrefatto/kofi-dev:$(VERSION) -d Dockerfile-dev
 
 docker-dev-run: ## run the development container
-	docker run -p 1312:1312 -t torrefatto/kofi-dev:$(VERSION) --graphiql
+	docker run -v $$PWD:/src -p 1312:1312 -t torrefatto/kofi-dev:$(VERSION) --graphiql
