@@ -75,7 +75,8 @@
 <p>Microservice to check or create a Codice Fiscale</p>
 <ul class="simple">
 <li><p>Free software: GPLv3</p></li>
-<li><p>For documentation, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code> in a properly configured environment (see <a class="reference internal" href="#develop">Develop</a>).</p></li>
+<li><p>For documentation either run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code> in a properly configured environment (see <a class="reference internal" href="#develop">Develop</a>),
+or go to <a class="reference external" href="https://torrefatto.github.io/kofi">https://torrefatto.github.io/kofi</a></p></li>
 <li><p>Dumb as it should be</p></li>
 </ul>
 <div class="section" id="how-to">
@@ -103,10 +104,24 @@ You can avoid using them, reading the <cite>Makefile</cite> source and using the
 </pre></div>
 </div>
 </div></blockquote>
+<p>Alternatively, you can use the development docker image. Build it with:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ make docker-dev-build
+</pre></div>
+</div>
+</div></blockquote>
+<p>Run it with:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ make docker-dev-run
+</pre></div>
+</div>
+</div></blockquote>
+<p>You’ll find the server on <code class="docutils literal notranslate"><span class="pre">localhost:1312</span></code>. You will find a <a class="reference internal" href="#graphiql">graphiql</a> page (needs internet
+connectivity :-/ ).</p>
 </div>
 <div class="section" id="production">
 <h3>Production<a class="headerlink" href="#production" title="Permalink to this headline">¶</a></h3>
-<p>Build the package and run it:</p>
+<p>Build the package, install and run it:</p>
 <blockquote>
 <div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ make dist
 </pre></div>
@@ -114,11 +129,122 @@ You can avoid using them, reading the <cite>Makefile</cite> source and using the
 </div></blockquote>
 <p>Otherwise, build the docker image:</p>
 <blockquote>
-<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ make docker-image
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ make docker-build
+</pre></div>
+</div>
+</div></blockquote>
+<p>This will build <code class="docutils literal notranslate"><span class="pre">torrefatto/kofi:&lt;tag&gt;</span></code> with the tag being the current version.
+You can run it and bind to the <code class="docutils literal notranslate"><span class="pre">1312</span></code> port:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ docker run -t torrefatto/kofi:&lt;tag&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<p>or in whatever orchestrator you prefer.</p>
+</div>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="rest">
+<h3>ReST<a class="headerlink" href="#rest" title="Permalink to this headline">¶</a></h3>
+<p>There are two endpoints:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/api/verify</span></code> [GET]</p></li>
+</ul>
+<dl class="simple">
+<dt>query parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cf</span></code>: the Codice Fiscale string</p></li>
+</ul>
+</dd>
+</dl>
+<p>returns:</p>
+<blockquote>
+<div><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;isCorrect&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;bool&gt;&quot;</span><span class="p">,</span> <span class="nt">&quot;isOmocode&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;bool&gt;&quot;</span><span class="p">,</span> <span class="nt">&quot;cf&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;str&gt;&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/api/interpolate</span></code> [GET]</p></li>
+</ul>
+<dl class="simple">
+<dt>query parameters:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">surname</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gender</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date_of_birth</span></code> in YYYYMMDD format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">place_of_birth</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p>returns:</p>
+<blockquote>
+<div><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;cf&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;str&gt;&quot;</span><span class="p">}</span>
 </pre></div>
 </div>
 </div></blockquote>
 </div>
+<div class="section" id="graphql">
+<h3>GraphQL<a class="headerlink" href="#graphql" title="Permalink to this headline">¶</a></h3>
+<p>As usual, there is just the <code class="docutils literal notranslate"><span class="pre">/graphql</span></code> endpoint. It accepts the following queries:</p>
+<blockquote>
+<div><div class="highlight-graphql notranslate"><div class="highlight"><pre><span></span><span class="nc">schema</span> <span class="p">{</span>
+  query: <span class="nc">codiceFiscaleQuery</span>
+<span class="p">}</span>
+
+<span class="kt">type</span> <span class="nc">codiceFiscaleQuery</span> <span class="p">{</span>
+  <span class="c c-Multi">&quot;&quot;&quot;The body of the verify response.&quot;&quot;&quot;</span>
+  <span class="nc">verify</span><span class="p">(</span>
+    <span class="c c-Multi">&quot;&quot;&quot;The Codice Fiscale string.&quot;&quot;&quot;</span>
+    cf: <span class="nc">String</span><span class="p">!</span>
+  <span class="p">):</span> <span class="nc">verifyType</span>
+
+  <span class="c c-Multi">&quot;&quot;&quot;Query to obtain one person&#39;s codice fiscale&quot;&quot;&quot;</span>
+  <span class="nc">interpolate</span><span class="p">(</span>
+    <span class="c c-Multi">&quot;&quot;&quot;Person&#39;s first name(s)&quot;&quot;&quot;</span>
+    name: <span class="nc">String</span><span class="p">!</span>
+
+    <span class="c c-Multi">&quot;&quot;&quot;Person&#39;s last name(s)&quot;&quot;&quot;</span>
+    surname: <span class="nc">String</span><span class="p">!</span>
+
+    <span class="c c-Multi">&quot;&quot;&quot;Person&#39;s official gender&quot;&quot;&quot;</span>
+    gender: <span class="nc">Gender</span><span class="p">!</span>
+
+    <span class="c c-Multi">&quot;&quot;&quot;Person&#39;s date of birth&quot;&quot;&quot;</span>
+    dateOfBirth: <span class="nc">String</span><span class="p">!</span>
+
+    <span class="c c-Multi">&quot;&quot;&quot;Person&#39;s place of birth&quot;&quot;&quot;</span>
+    placeOfBirth: <span class="nc">String</span><span class="p">!</span>
+  <span class="p">):</span> <span class="nc">interpolateType</span>
+<span class="p">}</span>
+
+<span class="c c-Multi">&quot;&quot;&quot;One&#39;s official gender.&quot;&quot;&quot;</span>
+<span class="nc">enum</span> <span class="nc">Gender</span> <span class="p">{</span>
+  <span class="c c-Multi">&quot;&quot;&quot;Male&quot;&quot;&quot;</span>
+  <span class="nc">M</span>
+
+  <span class="c c-Multi">&quot;&quot;&quot;Female&quot;&quot;&quot;</span>
+  <span class="nc">F</span>
+<span class="p">}</span>
+
+<span class="c c-Multi">&quot;&quot;&quot;The result of person&#39;s data interpolation&quot;&quot;&quot;</span>
+<span class="kt">type</span> <span class="nc">interpolateType</span> <span class="p">{</span>
+  <span class="c c-Multi">&quot;&quot;&quot;One person&#39;s codice fiscale.&quot;&quot;&quot;</span>
+  codiceFiscale: <span class="nc">String</span>
+<span class="p">}</span>
+
+<span class="c c-Multi">&quot;&quot;&quot;The result of checks on the CF.&quot;&quot;&quot;</span>
+<span class="kt">type</span> <span class="nc">verifyType</span> <span class="p">{</span>
+  <span class="c c-Multi">&quot;&quot;&quot;If the CF is omocode, .&quot;&quot;&quot;</span>
+  isOmocode: <span class="nc">Boolean</span>
+
+  <span class="c c-Multi">&quot;&quot;&quot;If the CF is correct.&quot;&quot;&quot;</span>
+  isCorrect: <span class="nc">Boolean</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>being <code class="docutils literal notranslate"><span class="pre">genderType</span></code> an enum comprising <code class="docutils literal notranslate"><span class="pre">M</span></code> and <code class="docutils literal notranslate"><span class="pre">F</span></code> values</p>
+<span class="target" id="graphiql"></span></div>
 </div>
 </div>
 
@@ -134,6 +260,11 @@ You can avoid using them, reading the <cite>Makefile</cite> source and using the
 <li><a class="reference internal" href="#how-to">How to</a><ul>
 <li><a class="reference internal" href="#develop">Develop</a></li>
 <li><a class="reference internal" href="#production">Production</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api">API</a><ul>
+<li><a class="reference internal" href="#rest">ReST</a></li>
+<li><a class="reference internal" href="#graphql">GraphQL</a></li>
 </ul>
 </li>
 </ul>

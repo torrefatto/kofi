@@ -18,7 +18,7 @@ Overview
 with the italian state ID number (called `codice fiscale`).
 It is just a wrapper around the python-codicefiscale_ library.
 
-It exposes a ReST and a GraphQL api that absolve the same task.
+It exposes a ReST and a GraphQL API that absolve the same task.
 You can either:
 
 * verify that a known `codice fiscale` is valid (and eventually
