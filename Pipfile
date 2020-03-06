@@ -13,6 +13,7 @@ sphinx = "*"
 python-docs-theme = "*"
 watchdog = "*"
 argh = "*"
+pygments-graphql-lexer = {git = "https://github.com/lablup/pygments-graphql-lexer.git"}
 
 [packages]
 kofi = {editable = true,path = "."}

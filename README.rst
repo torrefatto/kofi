@@ -2,36 +2,56 @@
 KoFi
 ====
 
-
-.. image:: https://img.shields.io/pypi/v/kofi.svg
-        :target: https://pypi.python.org/pypi/kofi
-
-.. image:: https://img.shields.io/travis/torrefatto/kofi.svg
-        :target: https://travis-ci.org/torrefatto/kofi
-
-.. image:: https://readthedocs.org/projects/kofi/badge/?version=latest
-        :target: https://kofi.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
-
-
 Microservice to check or create a Codice Fiscale
 
+* Free software: GPLv3
+* For documentation, run ``make docs`` in a properly configured environment (see Develop_).
+* Dumb as it should be
 
-* Free software: MIT license
-* Documentation: https://kofi.readthedocs.io.
 
+How to
+======
 
-Features
---------
-
-* TODO
-
-Credits
+Develop
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+To prepare a development environment use pipenv_. Install it and then run
 
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+  .. code-block:: shell
+
+    $ pipenv install --dev .
+
+To enter a development-ready environment
+
+  .. code-block:: shell
+
+    $ pipenv shell
+
+You'll get a shell with all the needed dependencies. If you have GNU_make_ installed, a set
+of targets are available to ease the tasks. In the following, these targets will be used.
+You can avoid using them, reading the `Makefile` source and using the commands therein instead.
+
+To start a development session
+
+  .. code-block:: shell
+
+    $ pipenv run kofi
+
+Production
+----------
+
+Build the package and run it:
+
+  .. code-block:: shell
+
+    $ make dist
+
+Otherwise, build the docker image:
+
+  .. code-block:: shell
+
+    $ make docker-image
+
+
+.. _pipenv: https://pipenv.kennethreitz.org/en/latest/
+.. _GNU_make: https://www.gnu.org/software/make/

@@ -5,32 +5,33 @@ There is a REST API and a GraphQL API.
 
 REST:
 
-    - `/api/verify` [GET]
-      query parameters:
-      - 'cf': the Codice Fiscale string
-      returns:
-      - `{"isCorrect": boolean, "isOmocode": boolean, "cf": str}`
-    - `/api/interpolate` [GET]
-      query parameters:
-      - `name`
-      - `surname`
-      - `gender`
-      - `date_of_birth` in YYYYMMDD format
-      - `place_of_birth`
-      returns:
-      cf- `{"cf": str}`
+``/api/verify`` [GET]
+query parameters:
+  - ``cf``: the Codice Fiscale string
+returns:
+  - ``{"isCorrect": boolean, "isOmocode": boolean, "cf": str}``
+``/api/interpolate`` [GET]
+query parameters:
+  - ``name``
+  - ``surname``
+  - ``gender``
+  - ``date_of_birth`` in YYYYMMDD format
+  - ``place_of_birth``
+returns:
+  - ``{"cf": str}``
 
 GraphQL:
 
-    - `/graphql`
-    accepts the following queries
-    ```
+``/graphql``
+accepts the following queries
+
+ .. code-block:: graphql
+
     query verify(cf: String!) {
         isCorrect
         isOmocode
     }
-    ```
-    ```
+
     query interpolate(
         name: String!
         surname: String!
@@ -40,8 +41,8 @@ GraphQL:
     ) {
         codiceFiscale
     }
-    ```
-    being `genderType` an enum comprising `M` and `F` values
+
+being ``genderType`` an enum comprising ``M`` and ``F`` values
 
 """
 
