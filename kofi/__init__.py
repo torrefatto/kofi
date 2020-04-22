@@ -2,4 +2,4 @@
 
 __author__ = """Leonardo Barcaroli"""
 __email__ = "leonardo.barcaroli@prima.it"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
