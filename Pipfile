@@ -14,9 +14,15 @@ python-docs-theme = "*"
 watchdog = "*"
 argh = "*"
 pygments-graphql-lexer = {git = "https://github.com/lablup/pygments-graphql-lexer.git"}
+bump2version = "*"
+black = ">=19"
 
 [packages]
 kofi = {editable = true,path = "."}
 
 [requires]
 python_version = "3.8"
+# vim : set syntax=toml
+
+[pipenv]
+allow_prereleases = true

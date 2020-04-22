@@ -22,7 +22,7 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
-VERSION := 0.1
+VERSION := 0.1.0
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -71,13 +71,28 @@ docs: ## generate Sphinx HTML documentation, including API docs
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
-release: dist ## package and upload a release
-	twine upload dist/*
+fix: bumpmicro dist
 
-dist: clean ## builds source and wheel package
+release: bumpminor dist
+
+majrelease: bumpmajor dist
+
+bumpmicro:
+	bumpversion micro
+
+bumpminor:
+	bumpversion minor
+
+bumpmajor:
+	bumpversion major
+
+dist: clean format
 	python setup.py sdist
 	python setup.py bdist_wheel
 	ls -l dist
+
+format:
+	black kofi/
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
