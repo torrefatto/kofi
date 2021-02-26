@@ -8,7 +8,7 @@ with open("README.rst") as readme_file:
 
 requirements = [
     "graphql-core>=2.3,<3",
-    "aiohttp==3.6.2",
+    "aiohttp==3.7.4",
     "aiohttp-graphql==1.0.0",
     "python-codicefiscale==0.3.7",
     "pyyaml",
